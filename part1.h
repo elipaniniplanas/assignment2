@@ -25,6 +25,21 @@ using namespace std;
 template <typename Comparable>
 class BinarySearchTree
 {
+  private:
+    struct BinaryNode
+    {
+        Comparable element;
+        BinaryNode *left;
+        BinaryNode *right;
+
+        BinaryNode( const Comparable & theElement, BinaryNode *lt, BinaryNode *rt )
+          : element{ theElement }, left{ lt }, right{ rt } { }
+        
+        BinaryNode( Comparable && theElement, BinaryNode *lt, BinaryNode *rt )
+          : element{ std::move( theElement ) }, left{ lt }, right{ rt } { }
+    };
+
+    BinaryNode *root;
   public:
     BinarySearchTree( ) : root{ nullptr }
     {
@@ -169,21 +184,6 @@ class BinarySearchTree
 
 
   private:
-    struct BinaryNode
-    {
-        Comparable element;
-        BinaryNode *left;
-        BinaryNode *right;
-
-        BinaryNode( const Comparable & theElement, BinaryNode *lt, BinaryNode *rt )
-          : element{ theElement }, left{ lt }, right{ rt } { }
-        
-        BinaryNode( Comparable && theElement, BinaryNode *lt, BinaryNode *rt )
-          : element{ std::move( theElement ) }, left{ lt }, right{ rt } { }
-    };
-
-    BinaryNode *root;
-
 
     /**
      * Internal method to insert into a subtree.
