@@ -170,16 +170,13 @@ class BinarySearchTree
     {
         remove( x, root );
     }
-    int count_leaves( BinaryNode *t )
+
+    int count_leaves( ostream & out = cout ) const
     {
-        int leaves;
-        if( t != nullptr )
-        {
-            leaves++;
-            count_leaves( t->left );
-            count_leaves( t->right );
-        }
-        return leaves;
+        if( isEmpty( ) )
+            return 0;
+        else
+            return count_leaves( root, out );
     }
 
 
@@ -341,6 +338,18 @@ class BinarySearchTree
             return nullptr;
         else
             return new BinaryNode{ t->element, clone( t->left ), clone( t->right ) };
+    }
+
+    int count_leaves( BinaryNode *t,  ostream & out = cout  ) const
+    {
+        int leaves = 0;
+        if( t != nullptr )
+        {
+            leaves++;
+            leaves += count_leaves( t->left );
+            leaves += count_leaves( t->right );
+        }
+        return leaves;
     }
 };
 
