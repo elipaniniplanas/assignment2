@@ -1,4 +1,4 @@
-#include "part1.h"
+#include "part2.h"
 #include <stdlib.h>     
 #include <time.h>
 #include <chrono>
@@ -19,11 +19,12 @@ main()
     shuffle(numbers.begin(), numbers.end(), default_random_engine(seed));
     /////////////////////////////////////////////////////////////
 
-    for(int i = 0; i < 1; i++)
+    for(int i = 0; i < 3; i++)
     {
         test_tree.insert(numbers[i]);
     }
     test_tree.printTree();
-    cout << "Amount of leaves: " << test_tree.count_leaves();
+    cout << "Amount of nodes in the tree at depth greater than 0 : " << test_tree.countDeep( 0 );
+
     return 0;
 }//i like dick in my ass

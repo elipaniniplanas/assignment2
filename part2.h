@@ -1,5 +1,5 @@
-#ifndef PART1_H
-#define PART1_H
+#ifndef PART2_H
+#define PART2_H
 
 #include "dsexceptions.h"
 #include <iostream>
@@ -19,28 +19,13 @@ using namespace std;
 // boolean isEmpty( )     --> Return true if empty; else false
 // void makeEmpty( )      --> Remove all items
 // void printTree( )      --> Print tree in sorted order
-// int count_leaves( )    --> Returns amount of leaves
+// int countDeep( x )     --> Returns amount of nodes with a greater depth of xs
 // ******************ERRORS********************************
 // Throws UnderflowException as warranted
 
 template <typename Comparable>
 class BinarySearchTree
 {
-  private:
-    struct BinaryNode
-    {
-        Comparable element;
-        BinaryNode *left;
-        BinaryNode *right;
-
-        BinaryNode( const Comparable & theElement, BinaryNode *lt, BinaryNode *rt )
-          : element{ theElement }, left{ lt }, right{ rt } { }
-        
-        BinaryNode( Comparable && theElement, BinaryNode *lt, BinaryNode *rt )
-          : element{ std::move( theElement ) }, left{ lt }, right{ rt } { }
-    };
-
-    BinaryNode *root;
   public:
     BinarySearchTree( ) : root{ nullptr }
     {
@@ -172,16 +157,31 @@ class BinarySearchTree
         remove( x, root );
     }
 
-    int count_leaves( ostream & out = cout ) const
+    int countDeep(int k) const
     {
         if( isEmpty( ) )
             return 0;
         else
-            return count_leaves( root, out );
+            return countDeep( k, root );
+
     }
 
-
   private:
+    struct BinaryNode
+    {
+        Comparable element;
+        BinaryNode *left;
+        BinaryNode *right;
+
+        BinaryNode( const Comparable & theElement, BinaryNode *lt, BinaryNode *rt )
+          : element{ theElement }, left{ lt }, right{ rt } { }
+        
+        BinaryNode( Comparable && theElement, BinaryNode *lt, BinaryNode *rt )
+          : element{ std::move( theElement ) }, left{ lt }, right{ rt } { }
+    };
+
+    BinaryNode *root;
+
 
     /**
      * Internal method to insert into a subtree.
@@ -341,16 +341,16 @@ class BinarySearchTree
             return new BinaryNode{ t->element, clone( t->left ), clone( t->right ) };
     }
 
-    int count_leaves( BinaryNode *t,  ostream & out = cout  ) const
+    int countDeep( int k, BinaryNode *t ) const
     {
-        int leaves = 0;
-        if( t != nullptr )
-        {
-            leaves++;
-            leaves += count_leaves( t->left );
-            leaves += count_leaves( t->right );
-        }
-        return leaves;
+        int amount = 0;
+        if( t == nullptr )
+            return amount;
+        if( k < 0 )
+            ++amount;
+        amount += countDeep( --k, t->left );
+        amount += countDeep( --k, t->right);
+        return amount;
     }
 };
 
