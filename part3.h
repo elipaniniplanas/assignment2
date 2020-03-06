@@ -239,7 +239,7 @@ class AvlTree
     bool balance( AvlNode * & t )
     {
         if( t == nullptr )
-            return true;
+            return false;
         
         if( height( t->left ) - height( t->right ) > ALLOWED_IMBALANCE )
             if( height( t->left->left ) >= height( t->left->right ) )

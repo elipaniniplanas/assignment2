@@ -19,7 +19,7 @@ main()
     shuffle(numbers.begin(), numbers.end(), default_random_engine(seed));
     /////////////////////////////////////////////////////////////
 
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < 4; i++)
     {
         test_tree.insert(numbers[i]);
     }

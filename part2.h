@@ -348,8 +348,8 @@ class BinarySearchTree
             return amount;
         if( k < 0 )
             ++amount;
-        amount += countDeep( --k, t->left );
-        amount += countDeep( --k, t->right);
+        amount += countDeep( k - 1, t->left );
+        amount += countDeep( k -1 , t->right);
         return amount;
     }
 };
