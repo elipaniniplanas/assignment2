@@ -1,5 +1,5 @@
-#ifndef PART3_H
-#define PART3_H
+#ifndef AVL_TREE_H
+#define AVL_TREE_H
 
 #include "dsexceptions.h"
 #include <algorithm>
@@ -172,7 +172,7 @@ class AvlTree
      */
     bool insert( const Comparable & x, AvlNode * & t )
     {
-        bool balanced = false;
+        bool balanced = false; 
         if( t == nullptr )
             t = new AvlNode{ x, nullptr, nullptr };
         else if( x < t->element )
@@ -184,7 +184,6 @@ class AvlTree
         else
             return false;
     }
-
     /**
      * Internal method to insert into a subtree.
      * x is the item to insert.
@@ -235,26 +234,45 @@ class AvlTree
     
     static const int ALLOWED_IMBALANCE = 1;
 
-    // Assume t is balanced or within one of being balanced
-    bool balance( AvlNode * & t )
+
+  // Assume t is balanced or within one of being balanced
+    void balance( AvlNode * & t )
     {
         if( t == nullptr )
             return false;
-        
+
+        cout << "balancing <" << height(t->left) << "> " << t->element << " <" << height(t->right) << ">" << endl ;
+
         if( height( t->left ) - height( t->right ) > ALLOWED_IMBALANCE )
+        {
             if( height( t->left->left ) >= height( t->left->right ) )
+            {
                 rotateWithLeftChild( t );
+            }
             else
+            {
                 doubleWithLeftChild( t );
+            }
+            t->height = max( height( t->left ), height( t->right );
+            return true;
+        }
         else
         if( height( t->right ) - height( t->left ) > ALLOWED_IMBALANCE )
+        {
             if( height( t->right->right ) >= height( t->right->left ) )
+            {
                 rotateWithRightChild( t );
+            }
             else
+            {
                 doubleWithRightChild( t );
-                
-        t->height = max( height( t->left ), height( t->right ) ) + 1;
+            }
+            t->height = max( height( t->left ), height( t->right );
+            return true;
+        }
+        return false
     }
+    
     
     /**
      * Internal method to find the smallest item in a subtree t.
