@@ -1,5 +1,5 @@
-#ifndef AVL_TREE_H
-#define AVL_TREE_H
+#ifndef AVL_TREE_B_H
+#define AVL_TREE_B_H
 
 #include "dsexceptions.h"
 #include <algorithm>
@@ -174,11 +174,14 @@ class AvlTree
     {
         bool balanced = false; 
         if( t == nullptr )
+        {
             t = new AvlNode{ x, nullptr, nullptr };
+        }
         else if( x < t->element )
             balanced = insert( x, t->left );
         else if( t->element < x )
             balanced = insert( x, t->right );
+        t->height = 1 + max( height( t->left ), height( t->right ));
         if( !balanced )
             return balance( t );
         else
@@ -192,51 +195,77 @@ class AvlTree
      */
     bool insert( Comparable && x, AvlNode * & t )
     {
+        bool balanced = false; // Bool used to know if balance() is needed to be called
         if( t == nullptr )
+        {
             t = new AvlNode{ std::move( x ), nullptr, nullptr };
+        }
         else if( x < t->element )
-            insert( std::move( x ), t->left );
+            balanced = insert( std::move( x ), t->left );
         else if( t->element < x )
-            insert( std::move( x ), t->right );
-        
-        balance( t );
+            balanced = insert( std::move( x ), t->right );
+        t->height = 1 + max( height( t->left ), height( t->right ));
+        if( !balanced )
+            return balance( t ); // The balance() function retuns a bool value to determine if balance is needed to be called again because only one rotation is need to balance an insertion
+        else
+            return false; 
     }
-     
+    
     /**
      * Internal method to remove from a subtree.
      * x is the item to remove.
-     * t is the node that roots the subtree.
-     * Set the new root of the subtree.
+     * t is th enode that roots the subtree.
      */
-    void remove( const Comparable & x, AvlNode * & t )
+
+    bool remove( const Comparable & x, AvlNode * & t )
     {
+        bool balanced = false; // Bool used to know if balance() is needed to be called
         if( t == nullptr )
-            return;   // Item not found; do nothing
+            return false;   // Item not found; do nothing
         
         if( x < t->element )
-            remove( x, t->left );
+            balanced = remove( x, t->left );
         else if( t->element < x )
-            remove( x, t->right );
+            balanced = remove( x, t->right );
+        //The item x is found!!
         else if( t->left != nullptr && t->right != nullptr ) // Two children
         {
             t->element = findMin( t->right )->element;
-            remove( t->element, t->right );
+            t->height = 1 + max( height( t->left ), height( t->right ));
+            balanced = remove( t->element, t->right );
         }
-        else
+        else //One child or none
         {
             AvlNode *oldNode = t;
-            t = ( t->left != nullptr ) ? t->left : t->right;
             delete oldNode;
+            if(t->left == nullptr && t->right == nullptr)// no child
+            {
+                t = nullptr;
+                return false;
+            }
+            else
+            {
+                t = ( t->left != nullptr ) ? t->left : t->right;
+            }
+            t->height = 1 + max( height( t->left ), height( t->right ));//increase the node's height
         }
+        if( !balanced )
+        {
+            balance( t );
+            return ((height( t->left ) - height( t->right ) ==  1 || (height( t->left ) - height( t->right )) ==  -1)); // if the balance factor becomes +/-1, the previous balance factor must have been 0 previously, so the height of the avl subtree would have not change, meaning that there's no need to balance the ancestors
+            //this is the line where remove is able to return true for the first time, allowing it to stop calling balance
+        }
+        else
+            return true;
         
-        balance( t );
     }
     
     static const int ALLOWED_IMBALANCE = 1;
 
 
   // Assume t is balanced or within one of being balanced
-    void balance( AvlNode * & t )
+  // balance() returns true if a rotation has happened
+    bool balance( AvlNode * & t )
     {
         if( t == nullptr )
             return false;
@@ -253,7 +282,7 @@ class AvlTree
             {
                 doubleWithLeftChild( t );
             }
-            t->height = max( height( t->left ), height( t->right );
+            t->height = 1 + max( height( t->left ), height( t->right ));
             return true;
         }
         else
@@ -267,12 +296,11 @@ class AvlTree
             {
                 doubleWithRightChild( t );
             }
-            t->height = max( height( t->left ), height( t->right );
+            t->height = 1 + max( height( t->left ), height( t->right ));
             return true;
         }
-        return false
+        return false;
     }
-    
     
     /**
      * Internal method to find the smallest item in a subtree t.

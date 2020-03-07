@@ -1,5 +1,5 @@
-#ifndef PART1_H
-#define PART1_H
+#ifndef BINARY_SEARCH_TREE1_H
+#define BINARY_SEARCH_TREE1_H
 
 #include "dsexceptions.h"
 #include <iostream>
@@ -346,7 +346,8 @@ class BinarySearchTree
         int leaves = 0;
         if( t != nullptr )
         {
-            leaves++;
+            if( t->left == nullptr && t->right == nullptr )
+                leaves++;
             leaves += count_leaves( t->left );
             leaves += count_leaves( t->right );
         }
